@@ -13,9 +13,15 @@ var Manager = Class({
         this.config = config;
         this.paths = config.paths || [];
     },
-    resolvePath: function (path) {
+    setPaths   : function (paths) {
+        this.paths = paths || [];
+    },
+    addPath    : function (path) {
+        this.paths.push(path);
+    },
+    resolvePath: function (file) {
         for (var i in this.paths) {
-            var _path = path.join(this.paths[i], path);
+            var _path = path.join(this.paths[i], file);
             if (fs.existsSync(_path)) {
                 return _path;
             }
@@ -23,7 +29,7 @@ var Manager = Class({
 
         throw new Error("Cannot resolve path: " + path);
     },
-    requireFile: function (path) {
+    require    : function (path) {
         try {
             var realPath = this.resolvePath(path);
             return require(realPath);
