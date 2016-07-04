@@ -34,7 +34,11 @@ var Manager = Class({
             var realPath = this.resolvePath(path);
             return require(realPath);
         } catch (e) {
-            return null;
+
+            console.error(e);
+            console.error(e.stack);
+
+            throw new Error("Failed to require path:", path);
         }
     }
 });
