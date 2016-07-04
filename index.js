@@ -20,6 +20,7 @@ var Manager = Class({
         this.paths.push(path);
     },
     resolvePath: function (file) {
+        file = file.replace(/^(\/|\.\/)/i, "");
         for (var i in this.paths) {
             var _path = path.join(this.paths[i], file);
             if (fs.existsSync(_path)) {
