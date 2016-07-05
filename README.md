@@ -1,1 +1,1 @@
-# dependency-manager
+# swag-require
