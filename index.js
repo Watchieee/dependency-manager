@@ -53,7 +53,7 @@ module.exports.getInstance = function (config, identifier) {
     }
 
     if (!instances[identifier] && !config) {
-        throw new Error("Cannot configure logger");
+        throw new Error("Cannot configure dependency manager");
     }
 
     if (instances[identifier]) {
