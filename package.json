@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Watchieee/dependency-manager",
   "dependencies": {
-    "heritage": "0.0.0"
+    "heritage": "0.0.0",
+    "stack-trace": "0.0.9"
   }
 }

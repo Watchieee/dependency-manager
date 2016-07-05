@@ -1,5 +1,6 @@
 //3rd party
-var Class = require("heritage").Class;
+var Class = require("heritage").Class,
+    stackTrace = require("stack-trace");
 
 //node libs
 var fs = require("fs"),
@@ -9,28 +10,43 @@ var fs = require("fs"),
 var instances = {};
 
 var Manager = Class({
-    initialize : function (config) {
+    initialize    : function (config) {
         this.config = config;
         this.paths = config.paths || [];
+        this.ignore = config.ignore || [];
     },
-    setPaths   : function (paths) {
+    setPaths      : function (paths) {
         this.paths = paths || [];
     },
-    addPath    : function (path) {
+    addPath       : function (path) {
         this.paths.push(path);
     },
-    resolvePath: function (file) {
+    resolvePath   : function (file) {
+        var ignores = this.getIgnorePaths(file);
+
         file = file.replace(/^(\/|\.\/)/i, "");
         for (var i in this.paths) {
             var _path = path.join(this.paths[i], file);
+
+            var skip = false;
+
+            for (var j in ignores) {
+                if (_path.indexOf(ignores[j]) === 0 || _path == ignores[j]) {
+                    skip = true;
+                    break;
+                }
+            }
+            if (skip) {
+                continue;
+            }
             if (fs.existsSync(_path)) {
                 return _path;
             }
         }
 
-        throw new Error("Cannot resolve path: " + path);
+        throw new Error("Cannot resolve path: " + file);
     },
-    require    : function (path) {
+    require       : function (path) {
         try {
             var realPath = this.resolvePath(path);
             return require(realPath);
@@ -39,8 +55,13 @@ var Manager = Class({
             console.error(e);
             console.error(e.stack);
 
-            throw new Error("Failed to require path:", path);
+            throw new Error("Failed to require path:" + path);
         }
+    },
+    getIgnorePaths: function (file) {
+        var ignores = JSON.parse(JSON.stringify(this.ignore));
+        ignores.push(stackTrace.get()[3].getFileName());
+        return ignores;
     }
 });
 
@@ -63,4 +84,3 @@ module.exports.getInstance = function (config, identifier) {
     instances[identifier] = new Manager(config);
     return instances[identifier];
 };
-
