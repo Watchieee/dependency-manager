@@ -1,6 +1,7 @@
 //3rd party
 var Class = require("heritage").Class,
-    stackTrace = require("stack-trace");
+    stackTrace = require("stack-trace"),
+    _ = require("lodash");
 
 //node libs
 var fs = require("fs"),
@@ -8,6 +9,13 @@ var fs = require("fs"),
 
 //Local vars
 var instances = {};
+var merge = function (a, b) {
+    return _.merge(a, b, function (a, b) {
+        if (_.isArray(a) || _.isArray(b)) {
+            return b;
+        }
+    });
+};
 
 var Manager = Class({
     initialize    : function (config) {
@@ -57,6 +65,22 @@ var Manager = Class({
 
             throw new Error("Failed to require path:" + path);
         }
+    },
+    requireMerged : function (file) {
+        var paths = JSON.parse(JSON.stringify(this.paths));
+        paths.reverse();
+
+        file = file.replace(/^(\/|\.\/)/i, "");
+
+        var final = {};
+        for (var i in paths) {
+            var _path = path.join(paths[i], file);
+            if (fs.existsSync(_path)) {
+                final = merge(final, require(_path));
+            }
+        }
+
+        return final;
     },
     getIgnorePaths: function (file) {
         var ignores = JSON.parse(JSON.stringify(this.ignore));
