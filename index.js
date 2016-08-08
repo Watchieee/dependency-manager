@@ -84,7 +84,18 @@ var Manager = Class({
     },
     getIgnorePaths: function (file) {
         var ignores = JSON.parse(JSON.stringify(this.ignore));
-        ignores.push(stackTrace.get()[3].getFileName());
+
+        for (var i = 1; i < stackTrace.get().length; i++) {
+            if (
+                stackTrace.get()[i].getFileName() &&
+                !stackTrace.get()[i].getFileName().match(/swag-require/ig) &&
+                stackTrace.get()[i].getFileName().indexOf(file) >= 0
+            ) {
+                ignores.push(stackTrace.get()[i].getFileName());
+                break;
+            }
+        }
+
         return ignores;
     }
 });
