@@ -8,7 +8,9 @@ var fs = require("fs"),
     path = require("path");
 
 //Local vars
-var instances = {};
+if (!global.instances) {
+    global.instances = {};
+}
 var merge = function (a, b) {
     return _.merge(a, b, function (a, b) {
         if (_.isArray(a) || _.isArray(b)) {
