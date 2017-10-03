@@ -8,8 +8,8 @@ var fs = require("fs"),
     path = require("path");
 
 //Local vars
-if (!global.instances) {
-    global.instances = {};
+if (!global.swagRequire) {
+    global.swagRequire = {instances: {}};
 }
 var merge = function (a, b) {
     return _.merge(a, b, function (a, b) {
@@ -110,14 +110,14 @@ module.exports.getInstance = function (config, identifier) {
         identifier = "default";
     }
 
-    if (!instances[identifier] && !config) {
+    if (!global.swagRequire.instances[identifier] && !config) {
         throw new Error("Cannot configure dependency manager");
     }
 
-    if (instances[identifier]) {
-        return instances[identifier];
+    if (global.swagRequire.instances[identifier]) {
+        return global.swagRequire.instances[identifier];
     }
 
-    instances[identifier] = new Manager(config);
-    return instances[identifier];
+    global.swagRequire.instances[identifier] = new Manager(config);
+    return global.swagRequire.instances[identifier];
 };
