@@ -21,7 +21,6 @@ var merge = function (a, b) {
 
 var Manager = Class({
     initialize    : function (config) {
-        this.config = config;
         this.paths = config.paths || [];
         this.ignore = config.ignore || [];
     },
