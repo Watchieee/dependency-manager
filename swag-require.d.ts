@@ -19,7 +19,7 @@ declare namespace SwagRequire {
          *
          * @param {SwagRequireConfig} config
          */
-        constructor(config: SwagRequireConfig)
+        constructor(config: SwagRequireConfig): SwagRequire;
 
         /**
          *
