@@ -12,7 +12,7 @@ if (!global.swagRequire) {
     global.swagRequire = {instances: {}};
 }
 var merge = function (a, b) {
-    return _.merge(a, b, function (a, b) {
+    return _.mergeWith(a, b, function (a, b) {
         if (_.isArray(a) || _.isArray(b)) {
             return b;
         }
